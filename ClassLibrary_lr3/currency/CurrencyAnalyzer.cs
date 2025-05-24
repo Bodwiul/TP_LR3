@@ -39,13 +39,14 @@ namespace ClassLibrary_lr3.currency
         }
 
         // Построение графика - возвращает список точек для графика
-        public (double[] Date, double[] Rates1, double[] Rates2) GetChartPoints()
+        public (DateTime[] Date, double[] Rates1, double[] Rates2) GetChartPoints()
         {
-            var date = dataList.Select(d => d.Date.ToOADate()).ToArray();
+            var date = dataList.Select(d => d.Date).ToArray();   // DateTime[] без ToOADate()
             var rates1 = dataList.Select(d => d.Rate1).ToArray();
             var rates2 = dataList.Select(d => d.Rate2).ToArray();
             return (date, rates1, rates2);
         }
+
 
         // Анализ изменений курса
         public List<(DateTime DayFrom, DateTime DayTo, double DeltaRate1, double DeltaRate2)> AnalyzeChanges()
