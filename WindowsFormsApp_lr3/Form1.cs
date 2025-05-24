@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using ClassLibrary_lr3.currency;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using ZedGraph;
 
 namespace WindowsFormsApp_lr3
 {
@@ -85,5 +87,62 @@ namespace WindowsFormsApp_lr3
             richTextBox1.AppendText($"Максимальное падение: {extremes.MaxDecreaseRate2:F4} за {extremes.DayMaxDecreaseRate2:dd.MM.yyyy}\n");
         }
 
+        private void button_forecast_Click(object sender, EventArgs e)
+        {
+            if (!int.TryParse(textBox1.Text, out int N) || N <= 0)
+            {
+                MessageBox.Show("Введите корректное положительное число дней для прогноза.");
+                return;
+            }
+
+            var chartPoints = analyzer.GetChartPoints();
+
+            // Прогноз для каждой валюты
+            var forecast1 = analyzer.ForecastRates(chartPoints.Rates1, N, 3);
+            var forecast2 = analyzer.ForecastRates(chartPoints.Rates2, N, 3);
+
+            // Дата последнего измерения
+            var datal = analyzer.GetData();
+            DateTime lastDate = datal.Last().Date;
+
+            // Подготовка точек для прогноза
+            var forecastDates = new List<double>();
+            for (int i = 1; i <= N; i++)
+                forecastDates.Add(new DateTime(lastDate.Year, lastDate.Month, lastDate.Day).AddDays(i).ToOADate());
+
+            // Очистка и подготовка графика
+            var pane = zedGraphControl1.GraphPane;
+            pane.CurveList.Clear();
+            pane.Title.Text = "Курс рубля с прогнозом";
+            pane.XAxis.Title.Text = "Дата";
+            pane.YAxis.Title.Text = "Курс";
+            pane.XAxis.Type = AxisType.Date;
+
+            // Исходные данные (отрисовать линии)
+            var list1 = new PointPairList();
+            var list2 = new PointPairList();
+            for (int i = 0; i < chartPoints.Date.Length; i++)
+            {
+                list1.Add(chartPoints.Date[i].ToOADate(), chartPoints.Rates1[i]);
+                list2.Add(chartPoints.Date[i].ToOADate(), chartPoints.Rates2[i]);
+            }
+            pane.AddCurve("USD/RUB", list1, Color.Blue, SymbolType.Circle);
+            pane.AddCurve("EUR/RUB", list2, Color.Red, SymbolType.Diamond);
+
+            // Прогноз (добавляем с другим цветом, без символов)
+            var forecastList1 = new PointPairList();
+            var forecastList2 = new PointPairList();
+            for (int i = 0; i < N; i++)
+            {
+                forecastList1.Add(forecastDates[i], forecast1[i]);
+                forecastList2.Add(forecastDates[i], forecast2[i]);
+            }
+            pane.AddCurve("USD/RUB", forecastList1, Color.Green, SymbolType.None);
+            pane.AddCurve("EUR/RUB", forecastList2, Color.Orange, SymbolType.None);
+
+            // Обновление графика
+            zedGraphControl1.AxisChange();
+            zedGraphControl1.Invalidate();
+        }
     }
 }

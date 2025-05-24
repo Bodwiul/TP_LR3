@@ -98,28 +98,32 @@ namespace ClassLibrary_lr3.currency
         // Прогнозирование методом скользящей средней
         public double[] ForecastRates(double[] rates, int N, int windowSize = 3)
         {
-            if (rates == null || rates.Length == 0 || N <= 0)
+            if (rates == null || rates.Length == 0 || N <= 0 || windowSize <= 0)
                 return new double[0];
 
-            // Скользящая средняя
-            List<double> smoothed = new List<double>();
+            List<double> forecastList = new List<double>();
 
-            for (int i = 0; i < rates.Length; i++)
+            // Копируем последние windowSize значений из реальных данных для начала прогноза
+            Queue<double> window = new Queue<double>();
+
+            // Если данных меньше windowSize, берем столько, сколько есть
+            int startIdx = Math.Max(0, rates.Length - windowSize);
+            for (int i = startIdx; i < rates.Length; i++)
+                window.Enqueue(rates[i]);
+
+            for (int i = 0; i < N; i++)
             {
-                int start = Math.Max(0, i - windowSize / 2);
-                int end = Math.Min(rates.Length -1, i + windowSize /2);
-                var window = rates.Skip(start).Take(end - start +1);
-                smoothed.Add(window.Average());
+                double avg = window.Average();  // среднее по текущему окну
+                forecastList.Add(avg);
+
+                // Убираем самый старый и добавляем текущий прогноз (скользящее окно)
+                if (window.Count == windowSize)
+                    window.Dequeue();
+                window.Enqueue(avg);
             }
 
-            // Экстраполяция — просто повторяем последний средний показатель
-            double lastSmoothed = smoothed.Last();
-
-            double[] forecast = new double[N];
-            for (int i = 0; i < N; i++)
-                forecast[i] = lastSmoothed;
-
-            return forecast;
+            return forecastList.ToArray();
         }
+
     }
 }

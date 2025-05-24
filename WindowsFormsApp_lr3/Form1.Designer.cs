@@ -33,6 +33,7 @@ namespace WindowsFormsApp_lr3
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button_forecast = new System.Windows.Forms.Button();
@@ -40,7 +41,6 @@ namespace WindowsFormsApp_lr3
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox2.SuspendLayout();
@@ -97,6 +97,22 @@ namespace WindowsFormsApp_lr3
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Результаты обработки";
             // 
+            // zedGraphControl1
+            // 
+            this.zedGraphControl1.Location = new System.Drawing.Point(7, 27);
+            this.zedGraphControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.zedGraphControl1.Name = "zedGraphControl1";
+            this.zedGraphControl1.ScrollGrace = 0D;
+            this.zedGraphControl1.ScrollMaxX = 0D;
+            this.zedGraphControl1.ScrollMaxY = 0D;
+            this.zedGraphControl1.ScrollMaxY2 = 0D;
+            this.zedGraphControl1.ScrollMinX = 0D;
+            this.zedGraphControl1.ScrollMinY = 0D;
+            this.zedGraphControl1.ScrollMinY2 = 0D;
+            this.zedGraphControl1.Size = new System.Drawing.Size(564, 382);
+            this.zedGraphControl1.TabIndex = 1;
+            this.zedGraphControl1.UseExtendedPrintDialog = true;
+            // 
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(550, 435);
@@ -130,6 +146,7 @@ namespace WindowsFormsApp_lr3
             this.button_forecast.TabIndex = 4;
             this.button_forecast.Text = "Спрогнозировать";
             this.button_forecast.UseVisualStyleBackColor = true;
+            this.button_forecast.Click += new System.EventHandler(this.button_forecast_Click);
             // 
             // textBox2
             // 
@@ -166,22 +183,6 @@ namespace WindowsFormsApp_lr3
             this.label2.Size = new System.Drawing.Size(357, 20);
             this.label2.TabIndex = 0;
             this.label2.Text = "Ввведите количество дней (для курса рубля)";
-            // 
-            // zedGraphControl1
-            // 
-            this.zedGraphControl1.Location = new System.Drawing.Point(7, 27);
-            this.zedGraphControl1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.zedGraphControl1.Name = "zedGraphControl1";
-            this.zedGraphControl1.ScrollGrace = 0D;
-            this.zedGraphControl1.ScrollMaxX = 0D;
-            this.zedGraphControl1.ScrollMaxY = 0D;
-            this.zedGraphControl1.ScrollMaxY2 = 0D;
-            this.zedGraphControl1.ScrollMinX = 0D;
-            this.zedGraphControl1.ScrollMinY = 0D;
-            this.zedGraphControl1.ScrollMinY2 = 0D;
-            this.zedGraphControl1.Size = new System.Drawing.Size(564, 382);
-            this.zedGraphControl1.TabIndex = 1;
-            this.zedGraphControl1.UseExtendedPrintDialog = true;
             // 
             // Form1
             // 
