@@ -18,8 +18,8 @@ namespace ClassLibrary_lr3
     public class MigrationRecord : Migration
     {
         override public int Year { get; }
-        override public int Immigrants { get; }       
-        virtual public int Emigrants { get; }       
+        override public int Immigrants { get; }
+        virtual public int Emigrants { get; }
 
         public int NetMigration => Immigrants - Emigrants; // Чистая миграция (разница между иммигрантами и эмигрантами)
 
@@ -47,6 +47,8 @@ namespace ClassLibrary_lr3
         decimal CalculateMaxPercentageChange();               // Расчет максимального процентного изменения миграции
         bool IsDataLoaded { get; }                            // Флаг загружены ли данные
 
+        // Прогнозирование с использованием скользящего среднего
+        List<MigrationRecord> ForecastUsingMovingAverage(int periodsToForecast, int windowSize);
     }
 
     // Интерфейс сервиса для работы с миграционными данными
@@ -66,7 +68,7 @@ namespace ClassLibrary_lr3
             var records = new List<MigrationRecord>();
             var lines = File.ReadAllLines(filePath);
 
-            foreach (var line in lines.Skip(1)) 
+            foreach (var line in lines.Skip(1)) // Пропускаем заголовок
             {
                 var parts = line.Split(',');
                 if (parts.Length >= 3)
@@ -95,7 +97,7 @@ namespace ClassLibrary_lr3
     {
         private readonly IMigrationDataParser _parser;
 
-        // Внедрение зависимости через конструктор
+        // Внедрение зависимости через конструктор (можно использовать любой парсер)
         public MigrationDataService(IMigrationDataParser parser)
         {
             _parser = parser;
@@ -142,6 +144,40 @@ namespace ClassLibrary_lr3
                 maxChange = Math.Max(maxChange, change);
             }
             return maxChange;
+        }
+
+        // Прогнозирование миграции на будущие периоды с использованием скользящего среднего
+        public List<MigrationRecord> ForecastUsingMovingAverage(int periodsToForecast, int windowSize)
+        {
+            if (!IsDataLoaded)
+                throw new InvalidOperationException("Данные не загружены");
+
+            if (periodsToForecast <= 0)
+                throw new ArgumentException("Количество периодов прогноза должно быть положительным", nameof(periodsToForecast));
+
+            var data = _migrationData.OrderBy(x => x.Year).ToList();
+            int lastYear = data.Last().Year;
+
+            var forecast = new List<MigrationRecord>();
+            var lastWindow = data.Skip(data.Count - windowSize).ToList();
+
+            for (int i = 1; i <= periodsToForecast; i++)
+            {
+                int avgImmigrants = (int)lastWindow.Average(x => x.Immigrants);
+                int avgEmigrants = (int)lastWindow.Average(x => x.Emigrants);
+
+                var forecastRecord = new MigrationRecord(
+                    year: lastYear + i,
+                    immigrants: avgImmigrants,
+                    emigrants: avgEmigrants
+                );
+
+                forecast.Add(forecastRecord);
+                lastWindow.RemoveAt(0);
+                lastWindow.Add(forecastRecord);
+            }
+
+            return forecast;
         }
 
         // Валидация загружены ли данные
