@@ -49,7 +49,12 @@ namespace WindowsFormsApp_lr3
             try
             {
                 var maxChange = _migrationAnalyzer.CalculateMaxPercentageChange();
+                var peakImmigration = _migrationAnalyzer.FindPeakImmigrationYear();
+                var peakEmigration = _migrationAnalyzer.FindPeakEmigrationYear();
+
                 string stats = $"Максимальное процентное изменение: {maxChange:F2}%\n" +
+                     $"Пик иммиграции: {peakImmigration.Immigrants} чел. в {peakImmigration.Year} году\n" +
+                              $"Пик эмиграции: {peakEmigration.Emigrants} чел. в {peakEmigration.Year} году\n" +
                               $"Всего записей: {_migrationAnalyzer.MigrationData.Count}";
 
                 richTextBox1.Text = stats;

@@ -45,6 +45,9 @@ namespace ClassLibrary_lr3
 
         // Методы анализа:
         decimal CalculateMaxPercentageChange();               // Расчет максимального процентного изменения миграции
+
+        MigrationRecord FindPeakImmigrationYear();            // Нахождение года с пиковой иммиграцией
+        MigrationRecord FindPeakEmigrationYear();             // Нахождение года с пиковой эмиграцией
         bool IsDataLoaded { get; }                            // Флаг загружены ли данные
 
         // Прогнозирование с использованием скользящего среднего
@@ -144,6 +147,19 @@ namespace ClassLibrary_lr3
                 maxChange = Math.Max(maxChange, change);
             }
             return maxChange;
+        }
+        // Нахождение года с максимальной иммиграцией
+        public MigrationRecord FindPeakImmigrationYear()
+        {
+            ValidateDataLoaded();
+            return _migrationData.OrderByDescending(x => x.Immigrants).First();
+        }
+
+        // Нахождение года с максимальной эмиграцией
+        public MigrationRecord FindPeakEmigrationYear()
+        {
+            ValidateDataLoaded();
+            return _migrationData.OrderByDescending(x => x.Emigrants).First();
         }
 
         // Прогнозирование миграции на будущие периоды с использованием скользящего среднего
