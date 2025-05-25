@@ -1,0 +1,9 @@
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\bin\Debug\WindowsFormsApp_lr3.exe.config
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\bin\Debug\WindowsFormsApp_lr3.exe
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\bin\Debug\WindowsFormsApp_lr3.pdb
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\obj\Debug\WindowsFormsApp_lr3.csproj.AssemblyReference.cache
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\obj\Debug\WindowsFormsApp_lr3.Properties.Resources.resources
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\obj\Debug\WindowsFormsApp_lr3.csproj.GenerateResource.cache
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\obj\Debug\WindowsFormsApp_lr3.csproj.CoreCompileInputs.cache
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\obj\Debug\WindowsFormsApp_lr3.exe
+C:\Users\Home\source\repos\WindowsFormsApp_lr3\WindowsFormsApp_lr3\obj\Debug\WindowsFormsApp_lr3.pdb
