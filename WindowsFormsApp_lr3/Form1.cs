@@ -35,7 +35,7 @@ namespace WindowsFormsApp_lr3
 
         private void InitializeChart()
         {
-            // Инициализация графика (если добавляете программно)
+            // Инициализация графика 
             migrationChart = new Chart();
             migrationChart.Dock = DockStyle.Fill;
             var chartArea = new ChartArea();
@@ -61,7 +61,116 @@ namespace WindowsFormsApp_lr3
             }
         }
 
-  
+        private void DisplayForecast(List<MigrationRecord> historicalData, List<MigrationRecord> forecastData)
+        {
+            if (migrationChart == null) return;
+
+            migrationChart.Series.Clear();
+
+            // Настройка области графика
+            var chartArea = migrationChart.ChartAreas[0];
+            chartArea.AxisX.Title = "Год";
+            chartArea.AxisY.Title = "Количество людей";
+            chartArea.AxisX.Interval = 1;
+            chartArea.AxisX.IsStartedFromZero = false;
+
+            //Серия для исторических данных 
+            Series histImmSeries = new Series("Иммигранты (история)")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = Color.Blue,
+                BorderWidth = 3
+            };
+
+            Series histEmiSeries = new Series("Эмигранты (история)")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = Color.Red,
+                BorderWidth = 3
+            };
+
+            //Серия для прогноза
+            Series forecastImmSeries = new Series("Иммигранты (прогноз)")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = Color.LightBlue,
+                BorderWidth = 2,
+                BorderDashStyle = ChartDashStyle.Dash
+            };
+
+            Series forecastEmiSeries = new Series("Эмигранты (прогноз)")
+            {
+                ChartType = SeriesChartType.Line,
+                Color = Color.Salmon,
+                BorderWidth = 2,
+                BorderDashStyle = ChartDashStyle.Dash
+            };
+
+            // Добавляем исторические данные
+            foreach (var record in historicalData)
+            {
+                histImmSeries.Points.AddXY(record.Year, record.Immigrants);
+                histEmiSeries.Points.AddXY(record.Year, record.Emigrants);
+            }
+
+            // Добавляем прогнозные данные 
+            foreach (var record in forecastData)
+            {
+                forecastImmSeries.Points.AddXY(record.Year, record.Immigrants);
+                forecastEmiSeries.Points.AddXY(record.Year, record.Emigrants);
+            }
+
+            // Соединяем последнюю точку истории с первой точкой прогноза
+            if (historicalData.Count > 0 && forecastData.Count > 0)
+            {
+                var lastHistorical = historicalData.Last();
+                var firstForecast = forecastData.First();
+
+                // Создаем соединяющие серии (невидимые, только для линий)
+                Series connectorImm = new Series()
+                {
+                    ChartType = SeriesChartType.Line,
+                    Color = Color.Blue,
+                    BorderWidth = 2,
+                    IsVisibleInLegend = false
+                };
+
+                Series connectorEmi = new Series()
+                {
+                    ChartType = SeriesChartType.Line,
+                    Color = Color.Red,
+                    BorderWidth = 2,
+                    IsVisibleInLegend = false
+                };
+
+                // Добавляем точки соединения
+                connectorImm.Points.AddXY(lastHistorical.Year, lastHistorical.Immigrants);
+                connectorImm.Points.AddXY(firstForecast.Year, firstForecast.Immigrants);
+
+                connectorEmi.Points.AddXY(lastHistorical.Year, lastHistorical.Emigrants);
+                connectorEmi.Points.AddXY(firstForecast.Year, firstForecast.Emigrants);
+
+                // Добавляем серии на график (в правильном порядке)
+                migrationChart.Series.Add(histImmSeries);
+                migrationChart.Series.Add(histEmiSeries);
+                migrationChart.Series.Add(connectorImm);
+                migrationChart.Series.Add(connectorEmi);
+                migrationChart.Series.Add(forecastImmSeries);
+                migrationChart.Series.Add(forecastEmiSeries);
+            }
+            else
+            {
+                // Без соединения, если нет данных
+                migrationChart.Series.Add(histImmSeries);
+                migrationChart.Series.Add(histEmiSeries);
+                migrationChart.Series.Add(forecastImmSeries);
+                migrationChart.Series.Add(forecastEmiSeries);
+            }
+
+            // Настраиваем отображение
+            chartArea.RecalculateAxesScale();
+            chartArea.AxisX.IsMarginVisible = false;
+        }
 
         private void DisplayMigrationChart(IEnumerable<MigrationRecord> data)
         {
@@ -154,5 +263,37 @@ namespace WindowsFormsApp_lr3
             }
         }
 
+        private void button_forecast_Click_1(object sender, EventArgs e)
+        {
+            if (_migrationAnalyzer == null || !_migrationAnalyzer.IsDataLoaded)
+            {
+                MessageBox.Show("Сначала загрузите данные через кнопку 'Данные о миграции'");
+                return;
+            }
+
+            if (!int.TryParse(textBox2.Text, out int yearsCount) || yearsCount <= 0)
+            {
+                MessageBox.Show("Введите корректное количество лет для прогноза (целое число больше 0)");
+                return;
+            }
+
+            try
+            {
+                // Получаем прогноз с автоматическим подбором окна
+                var forecastData = _migrationAnalyzer.ForecastUsingMovingAverage(yearsCount, 3);
+                var historicalData = _migrationAnalyzer.MigrationData.ToList();
+
+                // Отображаем результаты
+                DisplayForecast(historicalData, forecastData);
+                dataGridView1.DataSource = forecastData;
+
+                // Выводим информацию о методе
+                richTextBox1.Text += $"\n\nПрогноз методом скользящей средней";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка прогнозирования: {ex.Message}");
+            }
+        }
     }
 }

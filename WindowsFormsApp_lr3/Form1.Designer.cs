@@ -144,6 +144,7 @@ namespace WindowsFormsApp_lr3
             this.button_forecast.TabIndex = 4;
             this.button_forecast.Text = "Спрогнозировать";
             this.button_forecast.UseVisualStyleBackColor = true;
+            this.button_forecast.Click += new System.EventHandler(this.button_forecast_Click_1);
             // 
             // textBox2
             // 
@@ -196,6 +197,7 @@ namespace WindowsFormsApp_lr3
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
+
         }
 
         #endregion
