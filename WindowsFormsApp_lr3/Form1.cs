@@ -80,12 +80,15 @@ namespace WindowsFormsApp_lr3
             richTextBox1.Clear();
             richTextBox1.AppendText($"USD/RUB\n");
             richTextBox1.AppendText($"Максимальный прирост: {extremes.MaxIncreaseRate1:F4} за {extremes.DayMaxIncreaseRate1:dd.MM.yyyy}\n");
-            richTextBox1.AppendText($"Максимальное падение: {extremes.MaxDecreaseRate1:F4} за {extremes.DayMaxDecreaseRate1:dd.MM.yyyy}\n\n");
+            richTextBox1.AppendText($"Максимальное падение: {extremes.MaxDecreaseRate1:F4} за {extremes.DayMaxDecreaseRate1:dd.MM.yyyy}\n");
+            richTextBox1.AppendText($"Среднее изменение: {extremes.AvgChangeRate1:F4}\n\n");
 
             richTextBox1.AppendText($"EUR/RUB\n");
             richTextBox1.AppendText($"Максимальный прирост: {extremes.MaxIncreaseRate2:F4} за {extremes.DayMaxIncreaseRate2:dd.MM.yyyy}\n");
             richTextBox1.AppendText($"Максимальное падение: {extremes.MaxDecreaseRate2:F4} за {extremes.DayMaxDecreaseRate2:dd.MM.yyyy}\n");
+            richTextBox1.AppendText($"Среднее изменение: {extremes.AvgChangeRate2:F4}\n");
         }
+
 
         private void button_forecast_Click(object sender, EventArgs e)
         {

@@ -62,12 +62,17 @@ namespace ClassLibrary_lr3.currency
             return result;
         }
 
-        // Поиск максимумов и минимумов изменений
+        // Поиск максимумов, минимумов и среднего значения изменений
         public (double MaxIncreaseRate1, DateTime DayMaxIncreaseRate1,
-        double MaxDecreaseRate1, DateTime DayMaxDecreaseRate1,
-        double MaxIncreaseRate2, DateTime DayMaxIncreaseRate2,
-        double MaxDecreaseRate2, DateTime DayMaxDecreaseRate2) GetExtremes()
+                double MaxDecreaseRate1, DateTime DayMaxDecreaseRate1,
+                double AvgChangeRate1,
+                double MaxIncreaseRate2, DateTime DayMaxIncreaseRate2,
+                double MaxDecreaseRate2, DateTime DayMaxDecreaseRate2,
+                double AvgChangeRate2) GetExtremes()
         {
+            if (dataList == null || dataList.Count < 2)
+                throw new InvalidOperationException("Недостаточно данных для анализа");
+
             var changesRate1 = new List<(double delta, int index)>();
             var changesRate2 = new List<(double delta, int index)>();
 
@@ -79,21 +84,26 @@ namespace ClassLibrary_lr3.currency
 
             var maxIncR1 = changesRate1.OrderByDescending(x => x.delta).First();
             var maxDecR1 = changesRate1.OrderBy(x => x.delta).First();
+            var avgChangeR1 = changesRate1.Average(x => x.delta);
 
             var maxIncR2 = changesRate2.OrderByDescending(x => x.delta).First();
             var maxDecR2 = changesRate2.OrderBy(x => x.delta).First();
+            var avgChangeR2 = changesRate2.Average(x => x.delta);
 
             return (
                 maxIncR1.delta,
                 dataList[maxIncR1.index + 1].Date,
                 maxDecR1.delta,
                 dataList[maxDecR1.index + 1].Date,
+                avgChangeR1,
                 maxIncR2.delta,
                 dataList[maxIncR2.index + 1].Date,
                 maxDecR2.delta,
-                dataList[maxDecR2.index + 1].Date
+                dataList[maxDecR2.index + 1].Date,
+                avgChangeR2
             );
         }
+
 
         // Прогнозирование методом скользящей средней
         public double[] ForecastRates(double[] rates, int N, int windowSize = 3)
