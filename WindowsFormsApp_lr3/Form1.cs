@@ -11,6 +11,7 @@ using ClassLibrary_lr3.currency;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using ZedGraph;
 
+
 namespace WindowsFormsApp_lr3
 {
     public partial class Form1 : Form
