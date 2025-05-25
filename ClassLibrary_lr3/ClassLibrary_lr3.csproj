@@ -42,13 +42,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="currency\CurrencyAnalyzer.cs" />
+    <Compile Include="currency\CurrencyData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\WindowsFormsApp_lr3\WindowsFormsApp_lr3.csproj">
-      <Project>{9f7f3f9f-a3ff-4a93-8d8e-ae087845a2f0}</Project>
-      <Name>WindowsFormsApp_lr3</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
