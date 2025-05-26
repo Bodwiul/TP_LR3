@@ -9,8 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ClassLibrary_lr3;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using ZedGraph;
+
 namespace WindowsFormsApp_lr3
 {
     public partial class Form1 : Form
@@ -18,16 +17,13 @@ namespace WindowsFormsApp_lr3
         private IMigrationDataService _migrationDataService;
         private IMigrationAnalyzer _migrationAnalyzer;
         private string _currentFilePath;
-        private string _currentFilePath_cur;
-        private System.Windows.Forms.DataVisualization.Charting.Chart migrationChart;
-        private CurrencyAnalyzer analyzer;
+        private Chart migrationChart;
 
         public Form1()
         {
             InitializeComponent();
             InitializeServices();
             InitializeChart();
-            analyzer = new CurrencyAnalyzer();
         }
 
         private void InitializeServices()
@@ -40,7 +36,7 @@ namespace WindowsFormsApp_lr3
         private void InitializeChart()
         {
             // Инициализация графика 
-            migrationChart = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            migrationChart = new Chart();
             migrationChart.Dock = DockStyle.Fill;
             var chartArea = new ChartArea();
             migrationChart.ChartAreas.Add(chartArea);
@@ -196,7 +192,7 @@ namespace WindowsFormsApp_lr3
             migrationChart.ChartAreas.Add(chartArea);
 
             // Добавление легенды
-            var legend = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            var legend = new Legend();
             legend.Title = "Легенда";
             migrationChart.Legends.Add(legend);
 
@@ -252,119 +248,17 @@ namespace WindowsFormsApp_lr3
 
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    // Сброс привязки данных перед загрузкой новых
-                    dataGridView1.DataSource = null;
-                    dataGridView1.Columns.Clear();
-
                     _currentFilePath = openFileDialog.FileName;
                     var migrationData = _migrationDataService.GetMigrationData(_currentFilePath);
                     _migrationAnalyzer.LoadData(migrationData);
 
-                    // Создаем новый BindingSource для миграционных данных
-                    var bindingSource = new BindingSource();
-                    bindingSource.DataSource = new BindingList<ClassLibrary_lr3.MigrationRecord>(_migrationAnalyzer.MigrationData.ToList());
-                    dataGridView1.DataSource = bindingSource;
-
-                    // Настройка столбцов
-                    dataGridView1.AutoGenerateColumns = true;
-                    if (dataGridView1.Columns.Count >= 2)
-                    {
-                        dataGridView1.Columns[0].HeaderText = "Год";
-                        dataGridView1.Columns[1].HeaderText = "Количество мигрантов";
-                    }
-
-                    CalculateAndDisplayStatistics();
-                    DisplayMigrationChart(_migrationAnalyzer.MigrationData);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при загрузке данных: {ex.Message}", "Ошибка",
-                              MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void DisplayData()
-        {
-            var data = analyzer.GetData();
-
-            dataGridView1.Rows.Clear();
-            dataGridView1.Columns.Clear();
-
-            dataGridView1.Columns.Add("Date", "Дата");
-            dataGridView1.Columns.Add("Rate1", "Курс USD/RUB");
-            dataGridView1.Columns.Add("Rate2", "Курс EUR/RUB");
-            foreach (var item in data)
-            {
-                dataGridView1.Rows.Add(item.Date.ToString("dd.MM.yyyy"), item.Rate1, item.Rate2);
-            }
-        }
-
-        private void PlotChart()
-        {
-            // Получаем данные с датами в формате DateTime
-            var points = analyzer.GetChartPoints(); // теперь возвращает (DateTime[] Date, double[] Rates1, double[] Rates2)
-
-            var pane = zedGraphControl1.GraphPane;
-            pane.CurveList.Clear();
-
-            // Преобразуем DateTime в массив double через ToOADate для ZedGraph
-            double[] x = points.Date.Select(d => d.ToOADate()).ToArray();
-
-            // Добавляем кривые с преобразованными координатами X
-            pane.AddCurve("USD/RUB", x, points.Rates1, System.Drawing.Color.Blue);
-            pane.AddCurve("EUR/RUB", x, points.Rates2, System.Drawing.Color.Red);
-
-            // Форматируем ось X для отображения дат
-            pane.XAxis.Type = ZedGraph.AxisType.Date;
-            pane.XAxis.Scale.Format = "dd.MM.yyyy"; // формат даты по желанию
-            pane.XAxis.Scale.MajorUnit = ZedGraph.DateUnit.Day;
-            pane.XAxis.Scale.MinorUnit = ZedGraph.DateUnit.Hour;
-
-            zedGraphControl1.AxisChange();
-            zedGraphControl1.Invalidate();
-        }
-
-        private void ShowExtremes()
-        {
-            var extremes = analyzer.GetExtremes();
-
-            richTextBox1.Clear();
-            richTextBox1.AppendText($"USD/RUB\n");
-            richTextBox1.AppendText($"Максимальный прирост: {extremes.MaxIncreaseRate1:F4} за {extremes.DayMaxIncreaseRate1:dd.MM.yyyy}\n");
-            richTextBox1.AppendText($"Максимальное падение: {extremes.MaxDecreaseRate1:F4} за {extremes.DayMaxDecreaseRate1:dd.MM.yyyy}\n");
-            richTextBox1.AppendText($"Среднее изменение: {extremes.AvgChangeRate1:F4}\n\n");
-
-            richTextBox1.AppendText($"EUR/RUB\n");
-            richTextBox1.AppendText($"Максимальный прирост: {extremes.MaxIncreaseRate2:F4} за {extremes.DayMaxIncreaseRate2:dd.MM.yyyy}\n");
-            richTextBox1.AppendText($"Максимальное падение: {extremes.MaxDecreaseRate2:F4} за {extremes.DayMaxDecreaseRate2:dd.MM.yyyy}\n");
-            richTextBox1.AppendText($"Среднее изменение: {extremes.AvgChangeRate2:F4}\n");
-        }
-
-
-        private void button_currency_Click_1(object sender, EventArgs e)
-        {
-            try
-            {
-                var openFileDialog = new OpenFileDialog
-                {
-                    Filter = "CSV files (*.csv)|*.csv",
-                    Title = "Выберите файл с данными о курсе валют"
-                };
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    // Сброс привязки данных перед загрузкой новых
-                    dataGridView1.DataSource = null;
-                    dataGridView1.Columns.Clear();
-
-                    _currentFilePath_cur = openFileDialog.FileName;
-                    analyzer.LoadData(_currentFilePath_cur);
-
                     // Отображение данных в таблице
-                    DisplayData();
-                    PlotChart();
-                    ShowExtremes();
+                    dataGridView1.DataSource = _migrationAnalyzer.MigrationData;
+
+                    // Вычисление и отображение статистики
+                    CalculateAndDisplayStatistics();
+
+                    DisplayMigrationChart(_migrationAnalyzer.MigrationData);
                 }
             }
             catch (Exception ex)
@@ -376,83 +270,30 @@ namespace WindowsFormsApp_lr3
 
         private void button_forecast_Click_1(object sender, EventArgs e)
         {
-            bool hasCurrencyData = int.TryParse(textBox1.Text, out int daysCount) && daysCount > 0;
-            bool hasMigrationData = int.TryParse(textBox2.Text, out int yearsCount) && yearsCount > 0;
-
-            if (!hasCurrencyData && !hasMigrationData)
+            if (_migrationAnalyzer == null || !_migrationAnalyzer.IsDataLoaded)
             {
-                MessageBox.Show("Введите корректные данные для прогноза в нужном поле");
+                MessageBox.Show("Сначала загрузите данные через кнопку 'Данные о миграции'");
+                return;
+            }
+
+            if (!int.TryParse(textBox2.Text, out int yearsCount) || yearsCount <= 0)
+            {
+                MessageBox.Show("Введите корректное количество лет для прогноза (целое число больше 0)");
                 return;
             }
 
             try
             {
-                // Прогнозирование миграции (если заполнено textBox2)
-                if (hasMigrationData)
-                {
-                    var forecastData = _migrationAnalyzer.ForecastUsingMovingAverage(yearsCount, 3);
-                    var historicalData = _migrationAnalyzer.MigrationData.ToList();
+                // Получаем прогноз с автоматическим подбором окна
+                var forecastData = _migrationAnalyzer.ForecastUsingMovingAverage(yearsCount, 3);
+                var historicalData = _migrationAnalyzer.MigrationData.ToList();
 
-                    DisplayForecast(historicalData, forecastData);
+                // Отображаем результаты
+                DisplayForecast(historicalData, forecastData);
+                dataGridView1.DataSource = forecastData;
 
-                    // Используем фактический тип данных, возвращаемый ForecastUsingMovingAverage
-                    dataGridView1.DataSource = new BindingList<ClassLibrary_lr3.MigrationRecord>(forecastData);
-
-                    richTextBox1.Text += $"\n\nПрогноз методом скользящей средней";
-                }
-
-                // Прогнозирование курсов валют (если заполнено textBox1)
-                if (hasCurrencyData)
-                {
-                    var chartPoints = analyzer.GetChartPoints();
-
-                    // Прогноз для каждой валюты
-                    var forecast1 = analyzer.ForecastRates(chartPoints.Rates1, daysCount, 3);
-                    var forecast2 = analyzer.ForecastRates(chartPoints.Rates2, daysCount, 3);
-
-                    // Дата последнего измерения
-                    var datal = analyzer.GetData();
-                    DateTime lastDate = datal.Last().Date;
-
-                    // Подготовка точек для прогноза
-                    var forecastDates = new List<double>();
-                    for (int i = 1; i <= daysCount; i++)
-                        forecastDates.Add(new DateTime(lastDate.Year, lastDate.Month, lastDate.Day).AddDays(i).ToOADate());
-
-                    // Очистка и подготовка графика
-                    var pane = zedGraphControl1.GraphPane;
-                    pane.CurveList.Clear();
-                    pane.Title.Text = "Курс рубля с прогнозом";
-                    pane.XAxis.Title.Text = "Дата";
-                    pane.YAxis.Title.Text = "Курс";
-                    pane.XAxis.Type = ZedGraph.AxisType.Date;
-
-                    // Исходные данные
-                    var list1 = new PointPairList();
-                    var list2 = new PointPairList();
-                    for (int i = 0; i < chartPoints.Date.Length; i++)
-                    {
-                        list1.Add(chartPoints.Date[i].ToOADate(), chartPoints.Rates1[i]);
-                        list2.Add(chartPoints.Date[i].ToOADate(), chartPoints.Rates2[i]);
-                    }
-                    pane.AddCurve("USD/RUB", list1, Color.Blue, SymbolType.Circle);
-                    pane.AddCurve("EUR/RUB", list2, Color.Red, SymbolType.Diamond);
-
-                    // Прогноз
-                    var forecastList1 = new PointPairList();
-                    var forecastList2 = new PointPairList();
-                    for (int i = 0; i < daysCount; i++)
-                    {
-                        forecastList1.Add(forecastDates[i], forecast1[i]);
-                        forecastList2.Add(forecastDates[i], forecast2[i]);
-                    }
-                    pane.AddCurve("USD/RUB (прогноз)", forecastList1, Color.Green, SymbolType.None);
-                    pane.AddCurve("EUR/RUB (прогноз)", forecastList2, Color.Orange, SymbolType.None);
-
-                    // Обновление графика
-                    zedGraphControl1.AxisChange();
-                    zedGraphControl1.Invalidate();
-                }
+                // Выводим информацию о методе
+                richTextBox1.Text += $"\n\nПрогноз методом скользящей средней";
             }
             catch (Exception ex)
             {

@@ -27,12 +27,12 @@ namespace WindowsFormsApp_lr3
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.button_currency = new System.Windows.Forms.Button();
             this.button_migration = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.button_forecast = new System.Windows.Forms.Button();
@@ -40,9 +40,9 @@ namespace WindowsFormsApp_lr3
             this.label3 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.zedGraphControl1 = new ZedGraph.ZedGraphControl();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,7 +55,6 @@ namespace WindowsFormsApp_lr3
             this.button_currency.TabIndex = 0;
             this.button_currency.Text = "Данные о курсе рубля";
             this.button_currency.UseVisualStyleBackColor = true;
-            this.button_currency.Click += new System.EventHandler(this.button_currency_Click_1);
             // 
             // button_migration
             // 
@@ -94,21 +93,32 @@ namespace WindowsFormsApp_lr3
             // 
             // groupBox2
             // 
-            this.groupBox2.Location = new System.Drawing.Point(862, 12);
+            this.groupBox2.Controls.Add(this.label1);
+            this.groupBox2.Location = new System.Drawing.Point(367, 12);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox2.Size = new System.Drawing.Size(513, 267);
+            this.groupBox2.Size = new System.Drawing.Size(728, 267);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Результаты обработки";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(134, 116);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(115, 13);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "График зависимости";
             // 
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(367, 283);
             this.richTextBox1.Margin = new System.Windows.Forms.Padding(2);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(1008, 123);
+            this.richTextBox1.Size = new System.Drawing.Size(728, 123);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
             // 
@@ -168,27 +178,11 @@ namespace WindowsFormsApp_lr3
             this.label2.TabIndex = 0;
             this.label2.Text = "Ввведите количество дней (для курса рубля)";
             // 
-            // zedGraphControl1
-            // 
-            this.zedGraphControl1.Location = new System.Drawing.Point(369, 12);
-            this.zedGraphControl1.Name = "zedGraphControl1";
-            this.zedGraphControl1.ScrollGrace = 0D;
-            this.zedGraphControl1.ScrollMaxX = 0D;
-            this.zedGraphControl1.ScrollMaxY = 0D;
-            this.zedGraphControl1.ScrollMaxY2 = 0D;
-            this.zedGraphControl1.ScrollMinX = 0D;
-            this.zedGraphControl1.ScrollMinY = 0D;
-            this.zedGraphControl1.ScrollMinY2 = 0D;
-            this.zedGraphControl1.Size = new System.Drawing.Size(488, 267);
-            this.zedGraphControl1.TabIndex = 0;
-            this.zedGraphControl1.UseExtendedPrintDialog = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1384, 417);
-            this.Controls.Add(this.zedGraphControl1);
+            this.ClientSize = new System.Drawing.Size(1106, 417);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.groupBox2);
@@ -198,6 +192,8 @@ namespace WindowsFormsApp_lr3
             this.Text = "Form1";
             this.groupBox1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
@@ -212,13 +208,13 @@ namespace WindowsFormsApp_lr3
         private GroupBox groupBox2;
         private DataGridView dataGridView1;
         private RichTextBox richTextBox1;
+        private Label label1;
         private GroupBox groupBox3;
         private Label label3;
         private TextBox textBox1;
         private Label label2;
         private Button button_forecast;
         private TextBox textBox2;
-        private ZedGraph.ZedGraphControl zedGraphControl1;
     }
 }
 
