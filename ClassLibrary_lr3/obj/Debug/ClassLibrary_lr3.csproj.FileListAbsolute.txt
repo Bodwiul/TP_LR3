@@ -1,6 +1,0 @@
-C:\Users\Home\source\repos\WindowsFormsApp_lr3\ClassLibrary_lr3\bin\Debug\ClassLibrary_lr3.dll
-C:\Users\Home\source\repos\WindowsFormsApp_lr3\ClassLibrary_lr3\bin\Debug\ClassLibrary_lr3.pdb
-C:\Users\Home\source\repos\WindowsFormsApp_lr3\ClassLibrary_lr3\obj\Debug\ClassLibrary_lr3.csproj.AssemblyReference.cache
-C:\Users\Home\source\repos\WindowsFormsApp_lr3\ClassLibrary_lr3\obj\Debug\ClassLibrary_lr3.csproj.CoreCompileInputs.cache
-C:\Users\Home\source\repos\WindowsFormsApp_lr3\ClassLibrary_lr3\obj\Debug\ClassLibrary_lr3.dll
-C:\Users\Home\source\repos\WindowsFormsApp_lr3\ClassLibrary_lr3\obj\Debug\ClassLibrary_lr3.pdb

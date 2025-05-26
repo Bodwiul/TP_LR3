@@ -90,7 +90,6 @@
       <Name>ClassLibrary_lr3</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
     <Content Include="License-LGPL.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
