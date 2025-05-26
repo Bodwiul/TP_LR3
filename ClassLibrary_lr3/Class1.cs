@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -125,12 +125,12 @@ namespace ClassLibrary_lr3
         {
             ValidateDataLoaded();
             decimal maxChange = 0;
-
+            
             for (int i = 1; i < _migrationData.Count; i++)
             {
-                var prevTotal = _migrationData[i - 1].Immigrants + _migrationData[i - 1].Emigrants;
+                var prevTotal = _migrationData[i-1].Immigrants + _migrationData[i-1].Emigrants;
                 var currentTotal = _migrationData[i].Immigrants + _migrationData[i].Emigrants;
-
+                
                 if (prevTotal != 0)
                 {
                     var change = Math.Abs((currentTotal - prevTotal) / (decimal)prevTotal * 100);
